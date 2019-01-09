@@ -27,6 +27,22 @@ namespace Character.Spaceship
             ProcessInput();
         }
 
+        private void OnCollisionEnter(Collision other)
+        {
+            switch (other.gameObject.tag)
+            {
+                case "Obstacle":
+                    Debug.Log("You died!", other.gameObject);
+                    break;
+                case "Friendly":
+                    Debug.Log("You hit a friendly!", other.gameObject);
+                    break;
+                default:
+                    Debug.Log("You hit something else!", other.gameObject);
+                    break;
+            }
+        }
+
         private void ProcessInput()
         {
             _rigidBody.freezeRotation = true;
