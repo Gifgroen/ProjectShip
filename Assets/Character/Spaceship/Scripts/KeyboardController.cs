@@ -28,14 +28,15 @@ namespace Character.Spaceship
         };
 
         private State state = State.Alive;
+
+        private ThrustSound soundManager;
         
-        // Start is called before the first frame update
         private void Start()
         {
             _rigidBody = GetComponent<Rigidbody>();
+            soundManager = GetComponent<ThrustSound>();
         }
 
-        // Update is called once per frame
         private void Update()
         {
             ProcessInput();
@@ -50,17 +51,19 @@ namespace Character.Spaceship
             switch (other.gameObject.tag)
             {
                 case "Obstacle":
-                    Debug.Log("You died!", other.gameObject);
                     state = State.Died;
+                    soundManager.Stop();
+                    soundManager.PlayExplosion();
                     StartCoroutine(LoadLevel("Level1"));
                     break;
                 case "Destination":
                     state = State.Transcended;
-                    Debug.Log("You won!", other.gameObject);
+                    soundManager.Stop();
+                    soundManager.PlaySuccess();
                     StartCoroutine(LoadLevel("Level2"));
                     break;
                 default:
-                    Debug.Log("You hit something else!", other.gameObject);
+                    /* NOOP */
                     break;
             }
         }
@@ -89,6 +92,7 @@ namespace Character.Spaceship
             {
                 return;
             }
+            
             _rigidBody.AddRelativeForce(Vector3.up * rcsThrustForce);
         }
 

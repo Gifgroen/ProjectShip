@@ -8,27 +8,63 @@ namespace Character.Spaceship
     public class ThrustSound : MonoBehaviour
     {
         private AudioSource _audioSource;
-    
+
+        [SerializeField]
+        private AudioClip thrustClip;
+        [SerializeField]
+        private AudioClip explosionClip;
+        [SerializeField]
+        private AudioClip destinationClip;
+
+        private bool dead = false;
+        
         // Start is called before the first frame update
         private void Start()
         {
             _audioSource = GetComponent<AudioSource>();
         }
 
-        // Update is called once per frame
         private void Update()
         {
             ProcessInput();
         }
+        
+        public void PlayThrust()
+        {
+            if (_audioSource.isPlaying)
+            {
+                return;
+            }
+
+            _audioSource.PlayOneShot(thrustClip);
+        }
+
+        public void Stop()
+        {
+            _audioSource.Stop();
+        }
+
+        public void PlayExplosion()
+        {
+            dead = true;
+            _audioSource.PlayOneShot(explosionClip);
+        }
+
+        public void PlaySuccess()
+        {
+            dead = true;
+            _audioSource.PlayOneShot(destinationClip);
+        }
 
         private void ProcessInput()
         {
+            if (dead)
+            {
+                return;
+            }
             if (Input.GetKey(KeyCode.Space))
             {
-                if (!_audioSource.isPlaying)
-                {
-                    _audioSource.Play();
-                }
+                PlayThrust();
             }
             else
             {
