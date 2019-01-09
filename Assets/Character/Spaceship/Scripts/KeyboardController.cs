@@ -29,12 +29,14 @@ namespace Character.Spaceship
 
         private State state = State.Alive;
 
-        private ThrustSound soundManager;
-        
+        private ThrustSound _soundManager;
+        private ParticleManager _particleManager;
+
         private void Start()
         {
             _rigidBody = GetComponent<Rigidbody>();
-            soundManager = GetComponent<ThrustSound>();
+            _soundManager = GetComponent<ThrustSound>();
+            _particleManager = GetComponent<ParticleManager>();
         }
 
         private void Update()
@@ -47,19 +49,19 @@ namespace Character.Spaceship
             if (state != State.Alive)
             {
                 return;
-            }
+            }           
             switch (other.gameObject.tag)
             {
                 case "Obstacle":
                     state = State.Died;
-                    soundManager.Stop();
-                    soundManager.PlayExplosion();
+                    _soundManager.Stop();
+                    _soundManager.PlayExplosion();
                     StartCoroutine(LoadLevel("Level1"));
                     break;
                 case "Destination":
                     state = State.Transcended;
-                    soundManager.Stop();
-                    soundManager.PlaySuccess();
+                    _soundManager.Stop();
+                    _soundManager.PlaySuccess();
                     StartCoroutine(LoadLevel("Level2"));
                     break;
                 default:
@@ -81,6 +83,7 @@ namespace Character.Spaceship
                 return;
             }
             _rigidBody.freezeRotation = true;
+            _particleManager.PlayThrustParticles();
             ProcessThrustInput();
             ProcessRotationInput();
             _rigidBody.freezeRotation = false;
@@ -89,7 +92,8 @@ namespace Character.Spaceship
         private void ProcessThrustInput()
         {
             if (!Input.GetKey(KeyCode.Space))
-            {
+            {            
+                _particleManager.StopAllParticles();
                 return;
             }
             
