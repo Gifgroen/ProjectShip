@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Threading;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 // ReSharper disable once CheckNamespace
@@ -7,6 +10,8 @@ namespace Character.Spaceship
     [RequireComponent(typeof(Rigidbody))]
     public class KeyboardController : MonoBehaviour
     {
+        public float waitTime = 1f;
+        
         [SerializeField]
         private float rcsRotationForce = 32f;
         
@@ -14,7 +19,16 @@ namespace Character.Spaceship
         private float rcsThrustForce = 16f;
      
         private Rigidbody _rigidBody;
-    
+
+        private enum State
+        {
+            Alive,
+            Died,
+            Transcended
+        };
+
+        private State state = State.Alive;
+        
         // Start is called before the first frame update
         private void Start()
         {
@@ -29,13 +43,21 @@ namespace Character.Spaceship
 
         private void OnCollisionEnter(Collision other)
         {
+            if (state != State.Alive)
+            {
+                return;
+            }
             switch (other.gameObject.tag)
             {
                 case "Obstacle":
                     Debug.Log("You died!", other.gameObject);
+                    state = State.Died;
+                    StartCoroutine(LoadLevel("Level1"));
                     break;
-                case "Friendly":
-                    Debug.Log("You hit a friendly!", other.gameObject);
+                case "Destination":
+                    state = State.Transcended;
+                    Debug.Log("You won!", other.gameObject);
+                    StartCoroutine(LoadLevel("Level2"));
                     break;
                 default:
                     Debug.Log("You hit something else!", other.gameObject);
@@ -43,8 +65,18 @@ namespace Character.Spaceship
             }
         }
 
+        private IEnumerator LoadLevel(string levelName)
+        {
+            yield return new WaitForSeconds(waitTime);
+            SceneManager.LoadScene(levelName);
+        }
+
         private void ProcessInput()
         {
+            if (state != State.Alive)
+            {
+                return;
+            }
             _rigidBody.freezeRotation = true;
             ProcessThrustInput();
             ProcessRotationInput();
