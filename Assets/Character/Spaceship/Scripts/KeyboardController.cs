@@ -1,8 +1,8 @@
 ﻿using System.Collections;
-using System.Threading;
+using Game;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
+using VFX.Explosion;
 
 // ReSharper disable once CheckNamespace
 namespace Character.Spaceship
@@ -18,25 +18,30 @@ namespace Character.Spaceship
         [SerializeField]
         private float rcsThrustForce = 16f;
      
-        private Rigidbody _rigidBody;
+        private Rigidbody rigidBody;
 
-        private enum State
-        {
-            Alive,
-            Died,
-            Transcended
-        };
+        [SerializeField]
+        private Data gameData;
 
-        private State state = State.Alive;
+        private EngineSound engineSound;
+        private EngineParticles engineParticles;
 
-        private ThrustSound _soundManager;
-        private ParticleManager _particleManager;
+        [SerializeField]
+        private Explosion explosionPrefab;
+        
+        [SerializeField]
+        private Explosion successPrefab;
 
         private void Start()
         {
-            _rigidBody = GetComponent<Rigidbody>();
-            _soundManager = GetComponent<ThrustSound>();
-            _particleManager = GetComponent<ParticleManager>();
+            rigidBody = GetComponent<Rigidbody>();
+            engineSound = GetComponent<EngineSound>();
+            engineParticles = GetComponent<EngineParticles>();
+        }
+
+        private void Awake()
+        {
+            gameData.Init();
         }
 
         private void Update()
@@ -46,22 +51,24 @@ namespace Character.Spaceship
 
         private void OnCollisionEnter(Collision other)
         {
-            if (state != State.Alive)
+            if (!gameData.IsAlive)
             {
                 return;
             }           
             switch (other.gameObject.tag)
             {
                 case "Obstacle":
-                    state = State.Died;
-                    _soundManager.Stop();
-                    _soundManager.PlayExplosion();
+                    gameData.Kill();
+                    engineSound.Stop();
+                    var explosion = Instantiate(explosionPrefab);
+                    explosion.Explode(transform.position);
                     StartCoroutine(LoadLevel("Level1"));
                     break;
                 case "Destination":
-                    state = State.Transcended;
-                    _soundManager.Stop();
-                    _soundManager.PlaySuccess();
+                    gameData.SetTranscended();
+                    engineSound.Stop();
+                    var succesExplosion = Instantiate(successPrefab);
+                    succesExplosion.Explode(transform.position);
                     StartCoroutine(LoadLevel("Level2"));
                     break;
                 default:
@@ -78,26 +85,26 @@ namespace Character.Spaceship
 
         private void ProcessInput()
         {
-            if (state != State.Alive)
+            if (!gameData.IsAlive)
             {
                 return;
             }
-            _rigidBody.freezeRotation = true;
-            _particleManager.PlayThrustParticles();
+            rigidBody.freezeRotation = true;
+            engineParticles.PlayThrustParticles();
             ProcessThrustInput();
             ProcessRotationInput();
-            _rigidBody.freezeRotation = false;
+            rigidBody.freezeRotation = false;
         }
 
         private void ProcessThrustInput()
         {
             if (!Input.GetKey(KeyCode.Space))
             {            
-                _particleManager.StopAllParticles();
+                engineParticles.StopAllParticles();
                 return;
             }
             
-            _rigidBody.AddRelativeForce(Vector3.up * rcsThrustForce);
+            rigidBody.AddRelativeForce(Vector3.up * rcsThrustForce);
         }
 
         private void ProcessRotationInput()

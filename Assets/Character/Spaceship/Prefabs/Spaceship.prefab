@@ -355,8 +355,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thrustClip: {fileID: 8300000, guid: 48810d11520a7bb41b228e3f15b10392, type: 3}
-  explosionClip: {fileID: 8300000, guid: b3beed177e69b3747a39d177fc2c8a92, type: 3}
-  destinationClip: {fileID: 8300000, guid: 744c8d160eb28684fb7ccce78f915ae9, type: 3}
+  gameData: {fileID: 11400000, guid: 719365d466e26e0489067d4cb67f59b3, type: 2}
 --- !u!114 &8948484366630481920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -372,6 +371,11 @@ MonoBehaviour:
   waitTime: 3
   rcsRotationForce: 42
   rcsThrustForce: 16
+  gameData: {fileID: 11400000, guid: 719365d466e26e0489067d4cb67f59b3, type: 2}
+  explosionPrefab: {fileID: 2784937461828820798, guid: ff387874657a6f140861e4ab193a7420,
+    type: 3}
+  successPrefab: {fileID: 4931205342510025776, guid: 33273fbfca8215f418e509f8c77a5f74,
+    type: 3}
 --- !u!114 &5041471378573385775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -663,11 +667,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1340253745323116745}
     m_Modifications:
-    - target: {fileID: 6508013555478054395, guid: 029450cff39be9e4ba88927dfbb65e3b,
-        type: 3}
-      propertyPath: m_Name
-      value: LeftEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 1449558852822891882, guid: 029450cff39be9e4ba88927dfbb65e3b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -727,6 +726,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.y
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6508013555478054395, guid: 029450cff39be9e4ba88927dfbb65e3b,
+        type: 3}
+      propertyPath: m_Name
+      value: LeftEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 029450cff39be9e4ba88927dfbb65e3b, type: 3}
@@ -985,11 +989,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2957108523558492866}
     m_Modifications:
-    - target: {fileID: 6508013555478054395, guid: 029450cff39be9e4ba88927dfbb65e3b,
-        type: 3}
-      propertyPath: m_Name
-      value: RightEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 1449558852822891882, guid: 029450cff39be9e4ba88927dfbb65e3b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1049,6 +1048,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.y
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6508013555478054395, guid: 029450cff39be9e4ba88927dfbb65e3b,
+        type: 3}
+      propertyPath: m_Name
+      value: RightEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 029450cff39be9e4ba88927dfbb65e3b, type: 3}

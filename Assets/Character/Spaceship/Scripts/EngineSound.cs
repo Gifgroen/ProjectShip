@@ -1,22 +1,18 @@
 ﻿using UnityEngine;
-using UnityEngine.Experimental.PlayerLoop;
 
 // ReSharper disable once CheckNamespace
 namespace Character.Spaceship
 {
     [RequireComponent(typeof(AudioSource))]
-    public class ThrustSound : MonoBehaviour
+    public class EngineSound : MonoBehaviour
     {
         private AudioSource _audioSource;
 
         [SerializeField]
         private AudioClip thrustClip;
-        [SerializeField]
-        private AudioClip explosionClip;
-        [SerializeField]
-        private AudioClip destinationClip;
 
-        private bool dead = false;
+        [SerializeField]
+        private Game.Data gameData;
         
         // Start is called before the first frame update
         private void Start()
@@ -28,37 +24,15 @@ namespace Character.Spaceship
         {
             ProcessInput();
         }
-        
-        public void PlayThrust()
-        {
-            if (_audioSource.isPlaying)
-            {
-                return;
-            }
-
-            _audioSource.PlayOneShot(thrustClip);
-        }
 
         public void Stop()
         {
             _audioSource.Stop();
         }
 
-        public void PlayExplosion()
-        {
-            dead = true;
-            _audioSource.PlayOneShot(explosionClip);
-        }
-
-        public void PlaySuccess()
-        {
-            dead = true;
-            _audioSource.PlayOneShot(destinationClip);
-        }
-
         private void ProcessInput()
         {
-            if (dead)
+            if (!gameData.IsAlive)
             {
                 return;
             }
@@ -70,6 +44,16 @@ namespace Character.Spaceship
             {
                 _audioSource.Stop();
             }
+        }
+
+        private void PlayThrust()
+        {
+            if (_audioSource.isPlaying)
+            {
+                return;
+            }
+
+            _audioSource.PlayOneShot(thrustClip);
         }
     }
 }
